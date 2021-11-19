@@ -58,7 +58,8 @@ def generate_interview_question(max_tokens=100, paragraph=""):
     print("GENERATED:", paragraph)
     text = prompts_dict['interview_questions'] + f"{paragraph}:\n1."
     print("GENERATED:", text)
-    response = openai.Completion.create(engine="davinci-instruct-beta", prompt=text, max_tokens=max_tokens,
+    #response = openai.Completion.create(engine="davinci-instruct-beta", prompt=text, max_tokens=max_tokens,
+    response = openai.Completion.create(engine="curie", prompt=text, max_tokens=max_tokens,
                                         temperature=0.8, top_p=1)
     return response['choices'][0]['text']
 
