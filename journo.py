@@ -3,7 +3,7 @@ import openai
 
 
 #openai.api_key = "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"
-openai.api_key = "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"
+openai.api_key = "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"
 paragraph = "TEMPLATE TEXT"
 
 prompts_dict = {
