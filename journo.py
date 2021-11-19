@@ -4,6 +4,8 @@ import openai
 
 #openai.api_key = "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"
 openai.api_key = "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"
+
+openai.api_key = os.environ['OPENAI_KEY']
 paragraph = "TEMPLATE TEXT"
 
 prompts_dict = {
