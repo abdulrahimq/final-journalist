@@ -1,0 +1,172 @@
+			$(function() {
+			  $('a#process_input').bind('click', function() {
+				$.getJSON('/background_process', {
+				  proglang: $('input[name="proglang"]').val(),
+				}, function(data) {
+				    var r = data.result
+				    var ul = document.getElementById("result")
+				    var text_start = ""
+				  console.log(data.result[0].length)
+				  for(i = 0; i < r.length; i++) {
+				    text_start += "<li>" + r[i][2] + "</li>";
+				    var li = document.createElement("li");
+				    li.appendChild(document.createTextNode(r[i][2]));
+				    ul.appendChild(li);
+				  }
+				  <!-- $("#result").text(text_start); -->
+				});
+				return false;
+			  });
+			});
+
+
+<html>
+    <head>
+
+
+		<script type=text/javascript>
+            $(function() {
+			  $('input#process_input').bind('click', function() {
+				$.getJSON('/background_process', {
+				  proglang: $('input[name="proglang"]').val(),
+				}, function(data) {
+				    var r = data.result
+				    var ul = document.getElementById("result")
+				    var text_start = ""
+				  console.log(data.result[0].length)
+				  for(i = 0; i < r.length; i++) {
+				    text_start += "<li>" + r[i][2] + "</li>";
+				    var li = document.createElement("li");
+				    li.appendChild(document.createTextNode(r[i][2]));
+				    ul.appendChild(li);
+				  }
+				  <!-- $("#result").text(text_start); -->
+				});
+				return false;
+			  });
+			});
+		</script>
+    </head>
+
+    <body>
+    <section id="page">
+        <header>Journalist Helper</header>
+        <nav>
+            <h3>Questions</h3>
+            <div>
+<!--                <ul id=result>-->
+
+                    <!--
+                    <p ></p>
+                    {% for s in schools %}
+                        <li>{{ s[2] }}</li>
+                    {% endfor %}
+                    -->
+<!--                </ul>-->
+            </div>
+        </nav>
+
+        <main>
+            <h1>Write your article</h1>
+            <label>Write your first paragraph and submit</label>
+            <div class="textarea">
+                <textarea id="editor"></textarea>
+
+            </div>
+            <form action = "{{ url_for('contact') }}" method = "post">
+                <a href=# id=process_input><button class='btn btn-default'>Submit</button></a>
+            </form>
+        </main>
+
+
+    </section>
+    </body>
+</html>
+
+
+
+@app.route('/background_process')
+def background_process():
+
+    print("2")
+    print(request.method)
+    if request.method == "GET":
+        try:
+            url = request.url
+            soup = BeautifulSoup(url, 'html.parser')
+            print("URL", url)
+            print("SOUP: ", soup.title)
+            #r = requests.get("http://127.0.0.1:5000/contact", timeout=1)
+            keyword = request.form.get('language')
+            print("KEYWORD: ", keyword)
+        except:
+            print("NOT really")
+        if True:
+            rows = cur.execute('''SELECT * FROM keywords''').fetchall()
+            print(rows[0])
+            rows = rows[:2]
+    return jsonify(result=rows)
+
+
+
+
+
+#class School(db.Model):
+#    __tablename__ = 'schools-geocoded'
+#    __table_args__ = {'extend_existing': True}
+#    LOC_CODE = db.Column(db.Text, primary_key=True)
+
+'''
+class Keyword(db.Model):
+    __tablename__ = 'keyword'
+    __table_args__ = {'extend_existing': True}
+    LOC_CODE = db.Column(db.Text, primary_key=True)
+'''
+
+@app.route("/", methods=['GET', 'POST'])
+def index():
+    #school_count = School.query.count()
+    #schools = School.query.all()
+    #school = School.query.first()
+    print("1")
+    print(request.method)
+    if request.method == "POST":
+        try:
+            url = request.url
+            r = requests.get(url)
+            print("URL", r)
+        except:
+            print("ERROR")
+    con = sql.connect('../my_data.db')
+    cur = con.cursor()
+    rows = cur.execute('''SELECT * FROM keywords''').fetchall()[:40]
+    print("TEST", rows)
+    school_count = "300"
+    schools = ["School_1", "School_2"]
+    school = "SCHOOL"
+    return render_template("detail.html", count=school_count, schools=rows, location="New York City", school=school), "HELLo"
+
+def get_questions(keyword='', questions_list=[]):
+    questions_result = []
+    for question_item in questions_list:
+        if question_item[1] == keyword:
+            questions_result.append(question_item[2])
+    return questions_result
+
+
+            $("#search_form_input").keyup(function(){
+    console.log("HEY");
+    var text = $(this).val();
+
+    $.ajax({
+      url: "/suggestions",
+      type: "get",
+      data: {jsdata: text},
+      success: function(response) {
+        $("#place_for_suggestions").html(response);
+      },
+      error: function(xhr) {
+        //Do Something to handle error
+      }
+    });
+});
