@@ -66,29 +66,31 @@
 <body>
     <section id="page">
         <header id="title">Journalist Helper</header>
-        <main>
-            <h1>Write your article</h1>
-            <label>Write your first paragraph and submit</label>
-            <textarea id="editor"></textarea>
-        </main>
-        <div>
-            <div>
-                <div style="display:flex;">
-                    <h3>Questions</h3>
-                    <div id="process_input" style="text-align:center;padding-top:16px;padding-left:10px"><button>Submit</button></div>
+        <div style="display:flex; flex-direction:row; align-items:center">
+            <main style="margin-top:150px; width:100%">
+                <h1>Write your article</h1>
+                <label>Write your first paragraph and submit</label>
+                <textarea id="editor"></textarea>
+            </main>
+            <div style="display:flex; flex-direction:column; align-items:center">
+                <div>
+                    <div style="display:flex;">
+                        <h3>Questions</h3>
+                        <div id="process_input" style="text-align:center;padding-top:16px;padding-left:10px"><button>Submit</button></div>
+                    </div>
+                    <div id=result>
+                        <div id="place_for_suggestions"></div>
+                    </div>
                 </div>
-                <div id=result>
-                    <div id="place_for_suggestions"></div>
-                </div>
-            </div>
 
-            <div>
-                <div style="display:flex;">
-                    <h3>Questions</h3>
-                    <div id="process_input_1" style="text-align:center;padding-top:16px;padding-left:10px"><button>Submit</button></div>
-                </div>
-                <div id="result_1" style="text-align:center;padding-top:16px;padding-left:10px">
-                    <div id="place_for_suggestions_1"></div>
+                <div>
+                    <div style="display:flex;">
+                        <h3>Title</h3>
+                        <div id="process_input_1" style="text-align:center;padding-top:16px;padding-left:10px"><button>Submit</button></div>
+                    </div>
+                    <div id="result_1" style="text-align:center;padding-top:16px;padding-left:10px">
+                        <div id="place_for_suggestions_1"></div>
+                    </div>
                 </div>
             </div>
         </div>
