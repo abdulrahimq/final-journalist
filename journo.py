@@ -1,11 +1,11 @@
 import os
 import openai
+import re
 
-
-#openai.api_key = "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"
-openai.api_key = "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"
 
 openai.api_key = os.environ['OPENAI_KEY']
+
+
 paragraph = "TEMPLATE TEXT"
 
 prompts_dict = {
@@ -52,16 +52,26 @@ Create a list of questions for my interview with '''
 }
 
 
+def preprocess_questions_list(q_list):
+    temp_text = "1. " + q_list
+    temp_text = re.split('([0-9][0-9]*\S)', temp_text)[1:-2]
+    questions_result = []
+    for i, j in zip(temp_text[::2], temp_text[1::2]):
+        questions_result.append(i + j)
+    return questions_result
+
+
 def generate_interview_question(max_tokens=100, paragraph=""):
     if not paragraph:
         paragraph = input(f'''Please enter the main paragraph\n-------------------------\n''')
     print("GENERATED:", paragraph)
     text = prompts_dict['interview_questions'] + f"{paragraph}:\n1."
     print("GENERATED:", text)
-    #response = openai.Completion.create(engine="davinci-instruct-beta", prompt=text, max_tokens=max_tokens,
+    # response = openai.Completion.create(engine="davinci-instruct-beta", prompt=text, max_tokens=max_tokens,
     response = openai.Completion.create(engine="curie", prompt=text, max_tokens=max_tokens,
                                         temperature=0.8, top_p=1)
-    return response['choices'][0]['text']
+    results = preprocess_questions_list(response['choices'][0]['text'])
+    return results
 
 
 def generate_article_outline():
@@ -148,6 +158,6 @@ def show_example(task_type: str) -> str:
 
 
 if __name__ == "__main__":
-    #print(parse_important_info())
+    # print(parse_important_info())
     print("HE")
-    #print(choose_generation())
+    # print(choose_generation())
