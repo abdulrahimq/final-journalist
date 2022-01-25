@@ -10,14 +10,28 @@ paragraph = "TEMPLATE TEXT"
 
 prompts_dict = {
     "headline": f'''
-				Write a headline for the following article for the New York Times:
-				""""""
-				The Brady-Johnson Program in Grand Strategy is one of Yale University’s most celebrated and prestigious programs. Over the course of a year, it allows a select group of about two dozen students to immerse themselves in classic texts of history and statecraft, while also rubbing shoulders with guest instructors drawn from the worlds of government, politics, military affairs and the media. But now, a program created to train future leaders how to steer through the turbulent waters of history is facing a crisis of its own. Beverly Gage, a historian of 20th-century politics who has led the program since 2017, has resigned, saying the university failed to stand up for academic freedom amid inappropriate efforts by its donors to influence its curriculum and faculty hiring.
-				Headline: Leader of Prestigious Yale Program Resigns, Citing Donor Pressure
-				""""""
-				{paragraph}\n\n
-				Headline: 
-				''',
+Write a headline for the following article for the New York Times:				
+
+The Brady-Johnson Program in Grand Strategy is one of Yale University’s most celebrated and prestigious programs. Over the course of a year, it allows a select group of about two dozen students to immerse themselves in classic texts of history and statecraft, while also rubbing shoulders with guest instructors drawn from the worlds of government, politics, military affairs and the media. But now, a program created to train future leaders how to steer through the turbulent waters of history is facing a crisis of its own. Beverly Gage, a historian of 20th-century politics who has led the program since 2017, has resigned, saying the university failed to stand up for academic freedom amid inappropriate efforts by its donors to influence its curriculum and faculty hiring.
+Headline: Leader of Prestigious Yale Program Resigns, Citing Donor Pressure
+------------
+
+Write a headline for the follwoing article for The Atlantic:
+
+When Bobby McIlvaine died on September 11, 2001, his desk at home was a study in plate tectonics, coated in shifting piles of leather-bound diaries and yellow legal pads. He’d kept the diaries since he was a teenager, and they were filled with the usual diary things—longings, observations, frustrations—while the legal pads were marbled with more variety: aphoristic musings, quotes that spoke to him, stabs at fiction.
+Headline: What Bobby McIlvaine Left Behind 
+
+-----------
+
+Write a headline for the follwoing article for Longreads.com:
+There were seven of them. Their names were Ananda-Lahari, Andrea, Harita, Stutisheel, Takusumi, Vasu, and Wei Ming. They each had different gaits. Takusumi ran with his knees bent inward, almost like a ritual. Stutisheel shuffled each foot against the sidewalk like he was scraping dogshit off the bottom of his shoes. Sometimes Wei Ming ran like a dancer, floating for a second before the descent. Andrea and Vasu clicked off rhythmic steps, as if borne from an assembly line. To watch them was to watch some invisible piano player timing their notes off of the rhythm of their footfall. By just the second time I arrived, each runner had run well over a hundred miles. They were not stopping soon.
+Headline: Children on the Garden: On Life at a 3,100-Mile Race
+
+-------------
+
+Write a headline for the follwoing article for the Washington Post:
+''',
+
     "interview_questions": f'''
 	Create a list of questions for my interview with the CEO of a big corporate:
 
@@ -48,7 +62,9 @@ Create a list of questions for my interview with a cognitive psychologist, psych
 10. Is it possible that the rising-tide-lifts-all-boats economic argument provides the wealthy with an undue moral cover for the self-interested inequality that their wealth grants them?
 
 ------
-Create a list of questions for my interview with '''
+Create a list of questions for my interview with ''',
+
+"article_outline": "Create an outline for a study on Factors Affecting the Infant Feeding Practices of Mothers in Las Pinas City:\n\n1: Statement of the Problem\n2: Definition of Terms\n3: Benefits of Breastfeeding\n4: WHO Recommendations\n5: The International Code of Marketing of Breast Milk Substitutes\n6: The Baby-Friendly Hospital Initiative\n7: Formula Feeding\n8: Socio-economic Demographic Profile of Mothers\n9: Previous Infant Feeding Practices\n10: Conclusion\n------------------------------------------------------------------------------------------------------------------------------\nCreate an outline for an essay about Asbestos Poisoning:\n1: Definition of Asbestos Poisoning\n2: Significance of the Study\n3: Symptoms of Asbestos Poisoning\n4: Effects of Asbestos Poisoning\n5: Treatments\n6: Conclusion\n7: Recommendations\n8: How to Deal with Asbestos Hazards\n------------------------------------------------------------------------------------------------------------------------------\nCreate an outline for an essay about Shakespeare:\n1: Introduction\n2: Early Life\n3: His Father\n4: His Mother\n5: Life of Anne Hathaway\n6: Reference in Shakespeare's Poems\n7: Plays\n8: Sonnets\n9: Other Poems\n10: His Later Years\n11: Conclusion\n------------------------------------------------------------------------------------------------------------------------------\nCreate an outline for a long-form article about ",
 }
 
 
@@ -60,33 +76,60 @@ def preprocess_questions_list(q_list):
         questions_result.append(i + j)
     return questions_result
 
+def preprocess_outline_list(q_list):
+    temp_text = "1. " + q_list
+    temp_text = re.split('([0-9][0-9]*\S)', temp_text)[1:]
+    questions_result = []
+    for i, j in zip(temp_text[::2], temp_text[1::2]):
+        questions_result.append(i + j)
+    return questions_result
 
 def generate_interview_question(max_tokens=100, paragraph=""):
     if not paragraph:
         paragraph = input(f'''Please enter the main paragraph\n-------------------------\n''')
-    print("GENERATED:", paragraph)
     text = prompts_dict['interview_questions'] + f"{paragraph}:\n1."
-    print("GENERATED:", text)
-    # response = openai.Completion.create(engine="davinci-instruct-beta", prompt=text, max_tokens=max_tokens,
-    response = openai.Completion.create(engine="curie", prompt=text, max_tokens=max_tokens,
-                                        temperature=0.8, top_p=1)
+
+    response = openai.Completion.create(
+        #engine="text-davinci-001",
+        engine="text-curie-001",
+        prompt=text,
+        max_tokens=max_tokens,
+        temperature=0.8, top_p=1)
     results = preprocess_questions_list(response['choices'][0]['text'])
     return results
 
 
-def generate_article_outline():
-    pass
+def generate_article_outline(max_tokens=150, paragraph=""):
+    print("OUTLINE GENERATOR")
+    if not paragraph:
+        paragraph = input(f'''Please enter the main paragraph\n--------------------------\n''')
+    text = prompts_dict['article_outline'] + f"{paragraph}:\n1:"
+
+    response = openai.Completion.create(
+        #engine="text-davinci-001",
+        engine="text-curie-001",
+        prompt=text,
+        temperature=0.3,
+        max_tokens=max_tokens,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+
+    results = preprocess_outline_list(response['choices'][0]["text"])
+    return results
 
 
 def generate_article_ideas(paragraph="", max_tokens=100) -> str:
     pass
 
 
-def generate_headline(paragraph="", max_tokens=20) -> str:
+def generate_headline(paragraph="", max_tokens=64) -> str:
     if not paragraph:
         paragraph = input(f'''Please enter the main paragraph\n-------------------------\n''')
-    text = prompts_dict['headline'] + f"{paragraph}:\n1."
-    response = openai.Completion.create(engine="davinci-instruct-beta", prompt=paragraph, max_tokens=max_tokens,
+    text = prompts_dict['headline'] + f"{paragraph}\n Headline: "
+
+    response = openai.Completion.create(engine="text-curie-001", prompt=text, max_tokens=max_tokens,
                                         temperature=0.8, top_p=1)
     return response['choices'][0]['text']
 
@@ -99,7 +142,7 @@ def clean_prompt(prompt):
 
 task_dict = {
     "interview_questions": generate_interview_question,
-    "article_outline": generate_article_ideas,
+    "article_outline": generate_article_outline,
     "article_ideas": generate_article_ideas,
     "headline": generate_headline
 }
@@ -158,6 +201,4 @@ def show_example(task_type: str) -> str:
 
 
 if __name__ == "__main__":
-    # print(parse_important_info())
-    print("HE")
-    # print(choose_generation())
+    print("Journo app started")

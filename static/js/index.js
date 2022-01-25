@@ -27,3 +27,18 @@ $("#process_input_1").click(function(){
       }
     });
 });
+
+$("#process_input_2").click(function(){
+    var text = $("#editor").val();
+    $.ajax({
+      url: "/suggestions_2",
+      type: "get",
+      data: {jsdata: text},
+      success: function(response) {
+        $("#place_for_suggestions_2").html(response);
+      },
+      error: function(xhr) {
+        //Do Something to handle error
+      }
+    });
+});
