@@ -90,8 +90,8 @@ def generate_interview_question(max_tokens=100, paragraph=""):
     text = prompts_dict['interview_questions'] + f"{paragraph}:\n1."
 
     response = openai.Completion.create(
-        #engine="text-davinci-001",
-        engine="text-curie-001",
+        engine="text-davinci-002",
+        #engine="text-curie-001",
         prompt=text,
         max_tokens=max_tokens,
         temperature=0.8, top_p=1)
@@ -106,8 +106,8 @@ def generate_article_outline(max_tokens=150, paragraph=""):
     text = prompts_dict['article_outline'] + f"{paragraph}:\n1:"
 
     response = openai.Completion.create(
-        #engine="text-davinci-001",
-        engine="text-curie-001",
+        engine="text-davinci-002",
+        # engine="text-curie-001",
         prompt=text,
         temperature=0.3,
         max_tokens=max_tokens,
